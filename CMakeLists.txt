@@ -8,7 +8,7 @@ project (gpio_example C)
 #
 add_compile_definitions(ALTAIR_MQTT_HOST="test.mosquitto.org")
 add_compile_definitions(ALTAIR_MQTT_SECURE_PORT="8884")
-add_compile_definitions(MQTT_CA_CERTIFICATE="certs/ca.crt")
+add_compile_definitions(MQTT_CA_CERTIFICATE="certs/mosquitto.org.crt")
 add_compile_definitions(MQTT_CLIENT_PRIVATE_KEY="certs/client.key")
 add_compile_definitions(MQTT_CLIENT_CERTIFICATE="certs/client.crt")
 #

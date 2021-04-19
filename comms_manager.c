@@ -19,9 +19,8 @@ int sockfd = -1;
 
 EventRegistration* mqtt_socket_registration = NULL;
 
-// Note, this lock not needed for this sample but needed if multi threaded
-// as prevents lock contention in the MQTT-C library
-// This is a workaround
+// Note, this lock not needed for this sample but needed if app is multi threaded
+// as it prevents a deadlock in the MQTT-C library. This is a workaround.
 static pthread_mutex_t publish_lock = PTHREAD_MUTEX_INITIALIZER;
 
 static bool mqtt_connected = false;
@@ -44,8 +43,8 @@ struct reconnect_state_t reconnect_state;
 uint8_t sendbuf[SEND_BUFFER_SIZE];
 uint8_t recvbuf[RECEIVE_BUFFER_SIZE];
 
+// When .period is {0,0} then the timer is a oneshot timer
 DX_TIMER mqtt_reconnect_timer = { .period = {0, 0}, .name = "mqtt_reconnect_timer", .handler = mqtt_reconnect_handler };
-
 
 bool is_mqtt_connected(void) {
 	return mqtt_connected;
@@ -143,7 +142,7 @@ static WOLFSSL* open_nb_socket(const char* addr, const char* port) {
 	/* get address information */
 	rv = getaddrinfo(addr, port, &hints, &servinfo);
 	if (rv != 0) {
-		fprintf(stderr, "Failed to open socket (getaddrinfo): %s\n", gai_strerror(rv));
+		Log_Debug(stderr, "Failed to open socket (getaddrinfo): %s\n", gai_strerror(rv));
 		goto cleanupLabel;
 	}
 

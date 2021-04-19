@@ -8,7 +8,7 @@
     "AllowedConnections": [
       "test.mosquitto.org"
     ],
-    "DeviceAuthentication": "Replace_with_your_Azure_Sphere_Tenant_ID"
+    "DeviceAuthentication": "9d7e79eb-e021-43ce-9f2b-fa944b447494"
   },
   "ApplicationType": "Default"
 }
