@@ -1,7 +1,5 @@
-# Azure IoT Hub Direct Methods and Azure IoT Central Commands
+# Azure Sphere MQTT client with MQTT-C
 
-## Config app_manifest.json sample
+## Generate test.mosquitto.org TLC client certificate
 
-1. Set ID Scope
-1. Set Allowed connections
-    1. 
+[Generate a TLS client certificate for test.mosquitto.org](https://test.mosquitto.org/ssl)

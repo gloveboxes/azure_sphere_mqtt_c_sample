@@ -13,6 +13,7 @@ add_compile_definitions(MQTT_CLIENT_PRIVATE_KEY="certs/client.key")
 add_compile_definitions(MQTT_CLIENT_CERTIFICATE="certs/client.crt")
 #
 add_compile_definitions(MQTT_WOLF_DRIVER)
+add_compile_definitions(MQTT_USE_WOLFSSL)
 #
 ###################################################################################################################
 
