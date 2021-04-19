@@ -1,3 +1,6 @@
 [submodule "MQTT-C"]
 	path = MQTT-C
 	url = https://github.com/LiamBindle/MQTT-C.git
+[submodule "AzureSphereDevX"]
+	path = AzureSphereDevX
+	url = https://github.com/gloveboxes/AzureSphereDevX.git
