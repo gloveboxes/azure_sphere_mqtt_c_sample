@@ -7,8 +7,6 @@
 #include "string.h"
 #include <applibs/log.h>
 
-#define oneMS 1000000
-
 static void publish_message_timer_handler(EventLoopTimer* eventLoopTimer);
 
 typedef struct {
@@ -64,7 +62,7 @@ static void mqtt_connected_cb(void) {
 ///  Initialize peripherals, device twins, direct methods, timers.
 /// </summary>
 static void InitPeripheralsAndHandlers(void) {
-	strncpy(mqtt_msg.message, "hello from azure sphere", sizeof(mqtt_msg.message));
+	strncpy(mqtt_msg.message, "Hello from Azure Sphere using the MQTT-C client over wolfSSL ", sizeof(mqtt_msg.message));
 	mqtt_msg.message_length = strlen(mqtt_msg.message);
 
 	dx_timerSetStart(timerSet, NELEMS(timerSet));

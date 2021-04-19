@@ -7,6 +7,7 @@
 #define RECEIVE_BUFFER_SIZE 512
 #define BILLION 1000000000
 
+static void mqtt_ping_handler(EventLoopTimer* eventLoopTimer);
 static void mqtt_reconnect_handler(EventLoopTimer* eventLoopTimer);
 static void mqtt_set_subscriptions(void);
 static void reconnect_client(struct mqtt_client* client, void** reconnect_state_vptr);
@@ -18,10 +19,6 @@ struct mqtt_client client;
 int sockfd = -1;
 
 EventRegistration* mqtt_socket_registration = NULL;
-
-// Note, this lock not needed for this sample but needed if app is multi threaded
-// as it prevents a deadlock in the MQTT-C library. This is a workaround.
-static pthread_mutex_t publish_lock = PTHREAD_MUTEX_INITIALIZER;
 
 static bool mqtt_connected = false;
 static void (*_mqtt_connected_cb)(void);
@@ -45,23 +42,24 @@ uint8_t recvbuf[RECEIVE_BUFFER_SIZE];
 
 // When .period is {0,0} then the timer is a oneshot timer
 DX_TIMER mqtt_reconnect_timer = { .period = {0, 0}, .name = "mqtt_reconnect_timer", .handler = mqtt_reconnect_handler };
+DX_TIMER mqtt_ping_timer = { .period = {30, 0}, .name = "mqtt_ping_timer", .handler = mqtt_ping_handler };
 
 bool is_mqtt_connected(void) {
 	return mqtt_connected;
 }
 
-void publish_message(const void* data, size_t data_length, const char* topic) {
-	int lock_retry = 0, rc = 0;
-
-	if (strlen(topic) == 0 || !dx_isNetworkReady()) { return; }
-
-	while ((rc = pthread_mutex_trylock(&publish_lock)) == EBUSY && lock_retry++ < 5) {
-		nanosleep(&(struct timespec) { 0, 1000000 }, NULL);
-	}
-
-	if (rc == EBUSY) {
+static void mqtt_ping_handler(EventLoopTimer* eventLoopTimer){
+	if (ConsumeEventLoopTimerEvent(eventLoopTimer) != 0) {
+		dx_terminate(DX_ExitCode_ConsumeEventLoopTimeEvent);
 		return;
 	}
+	if (mqtt_connected) {
+		mqtt_ping(&client);
+	}
+}
+
+void publish_message(const void* data, size_t data_length, const char* topic) {
+	if (strlen(topic) == 0 || !dx_isNetworkReady()) { return; }
 
 	mqtt_mq_clean(&client.mq);
 
@@ -70,8 +68,6 @@ void publish_message(const void* data, size_t data_length, const char* topic) {
 	}
 
 	mqtt_sync(&client);
-
-	pthread_mutex_unlock(&publish_lock);
 }
 
 /// <summary>
@@ -94,9 +90,7 @@ static void mqtt_reconnect_handler(EventLoopTimer* eventLoopTimer) {
 }
 
 static void msg_handler(EventLoop* el, int fd, EventLoop_IoEvents events, void* context) {
-	pthread_mutex_lock(&publish_lock);
 	mqtt_sync(&client);
-	pthread_mutex_unlock(&publish_lock);
 }
 
 static char* get_absolute_storage_path(const char* file, const char* name) {
@@ -142,7 +136,7 @@ static WOLFSSL* open_nb_socket(const char* addr, const char* port) {
 	/* get address information */
 	rv = getaddrinfo(addr, port, &hints, &servinfo);
 	if (rv != 0) {
-		Log_Debug(stderr, "Failed to open socket (getaddrinfo): %s\n", gai_strerror(rv));
+		Log_Debug("Failed to open socket (getaddrinfo): %s\n", gai_strerror(rv));
 		goto cleanupLabel;
 	}
 
@@ -310,7 +304,7 @@ static void reconnect_client(struct mqtt_client* client, void** reconnect_state_
 	/* Ensure we have a clean session */
 	uint8_t connect_flags = MQTT_CONNECT_CLEAN_SESSION;
 	/* Send connection request to the broker. */
-	mqtt_connect(client, client_id, NULL, NULL, 0, NULL, NULL, connect_flags, 400);
+	mqtt_connect(client, client_id, NULL, NULL, 0, NULL, NULL, connect_flags, 300);
 
 	mqtt_set_subscriptions();
 }
@@ -350,6 +344,7 @@ void initialize_mqtt(void (*publish_callback)(void** unused, struct mqtt_respons
 	mqtt_init_reconnect(&client, reconnect_client, &reconnect_state, publish_callback);
 
 	dx_timerStart(&mqtt_reconnect_timer);
+	dx_timerStart(&mqtt_ping_timer);
 
 	reconnect_client(&client, &client.reconnect_state);
 }
