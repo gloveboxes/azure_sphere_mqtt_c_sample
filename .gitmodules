@@ -1,1 +1,7 @@
 
+[submodule "src/AzureSphere_HighLevel/MQTT-C"]
+	path = src/AzureSphere_HighLevel/MQTT-C
+	url = https://github.com/LiamBindle/MQTT-C.git
+[submodule "src/AzureSphere_HighLevel/AzureSphereDevX"]
+	path = src/AzureSphere_HighLevel/AzureSphereDevX
+	url = https://github.com/gloveboxes/AzureSphereDevX.git
