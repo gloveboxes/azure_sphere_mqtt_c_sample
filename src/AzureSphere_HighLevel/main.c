@@ -1,3 +1,6 @@
+/* Copyright (c) Microsoft Corporation. All rights reserved.
+   Licensed under the MIT License. */
+
 #include "comms_manager.h"
 #include "dx_exit_codes.h"
 #include "dx_terminate.h"

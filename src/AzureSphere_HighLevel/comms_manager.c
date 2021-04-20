@@ -1,3 +1,6 @@
+/* Copyright (c) Microsoft Corporation. All rights reserved.
+   Licensed under the MIT License. */
+
 #include "comms_manager.h"
 
 /* Maximum size for network read/write callbacks. There is also a v5 define that
