@@ -16,11 +16,11 @@ typedef struct {
 
 MQTT_MESSAGE mqtt_msg;
 
-const char* sub_topics[] = { "azuresphere/sample/inbound" };
-const char* pub_topic = "azuresphere/sample/outbound";
+const char* sub_topics[] = { "azuresphere/sample/device" };
+const char* pub_topic = "azuresphere/sample/host";
 
 // fire the timer evey 5 seconds
-static DX_TIMER publish_message_timer = { .period = {5, 0}, .name = "publish_message_timer", .handler = publish_message_timer_handler };
+static DX_TIMER publish_message_timer = { .period = {1, 0}, .name = "publish_message_timer", .handler = publish_message_timer_handler };
 static DX_TIMER* timerSet[] = { &publish_message_timer };
 
 static void publish_message_timer_handler(EventLoopTimer* eventLoopTimer) {

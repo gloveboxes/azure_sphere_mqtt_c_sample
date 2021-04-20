@@ -8,9 +8,9 @@ project (gpio_example C)
 #
 add_compile_definitions(ALTAIR_MQTT_HOST="test.mosquitto.org")
 add_compile_definitions(ALTAIR_MQTT_SECURE_PORT="8884")
-add_compile_definitions(MQTT_CA_CERTIFICATE="certs/mosquitto.org.crt")
-add_compile_definitions(MQTT_CLIENT_PRIVATE_KEY="certs/client.key")
-add_compile_definitions(MQTT_CLIENT_CERTIFICATE="certs/client.crt")
+add_compile_definitions(MQTT_CA_CERTIFICATE="Certs/mosquitto.org.crt")
+add_compile_definitions(MQTT_CLIENT_PRIVATE_KEY="Certs/client.key")
+add_compile_definitions(MQTT_CLIENT_CERTIFICATE="Certs/client.crt")
 #
 add_compile_definitions(MQTT_USE_WOLFSSL)
 #
@@ -37,4 +37,4 @@ set_source_files_properties(MQTT-C/include/mqtt.h PROPERTIES COMPILE_FLAGS -Wno-
 set_source_files_properties(MQTT-C/src/mqtt_pal.c PROPERTIES COMPILE_FLAGS -Wno-conversion)
 
 
-azsphere_target_add_image_package(${PROJECT_NAME} RESOURCE_FILES "certs/mosquitto.org.crt" "certs/client.crt" "certs/client.key")
+azsphere_target_add_image_package(${PROJECT_NAME} RESOURCE_FILES "Certs/mosquitto.org.crt" "Certs/client.crt" "Certs/client.key")
