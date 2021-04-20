@@ -33,7 +33,7 @@ static void publish_message_timer_handler(EventLoopTimer* eventLoopTimer) {
 	}
 }
 
-// this function is called when the device receives a new message from the MQQT Broker
+// this function is called when the device receives a new message from the MQTT Broker
 static void publish_callback(void** unused, struct mqtt_response_publish* published) {
 	char* message;
 
